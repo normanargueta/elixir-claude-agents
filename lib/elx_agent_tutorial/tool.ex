@@ -35,7 +35,7 @@ defmodule ElxAgentTutorial.Tool do
 
   @callback name() :: String.t()
   @callback description() :: String.t()
-  @callback input() :: %{optional(String.t()) => input_spec()}
+  @callback inputs() :: %{optional(String.t()) => input_spec()}
   @callback forward(map()) :: String.t()
 
   defmacro __using__(_opts) do
