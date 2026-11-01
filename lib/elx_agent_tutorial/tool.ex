@@ -79,7 +79,7 @@ defmodule ElxAgentTutorial.Tool do
   end
 
   @doc "Anthropic Messages API tool definition: name, description, input_schema."
-  def to_antropic_schema(%__MODULE__{} = tool) do
+  def to_anthropic_schema(%__MODULE__{} = tool) do
     %{
       "name" => tool.name,
       "description" => tool.description,
