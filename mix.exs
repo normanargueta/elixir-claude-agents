@@ -26,7 +26,13 @@ defmodule ElxAgentTutorial.MixProject do
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
       {:req, "~> 0.7.5"},
       {:jason, "~> 1.4"},
-      {:dotenvy, "~> 1.2"}
+      {:dotenvy, "~> 1.2"},
+      # Module 4 / capstone: local embeddings via a Hugging Face Hub model
+      # (sentence-transformers/all-MiniLM-L6-v2), run with Bumblebee + Nx.
+      {:bumblebee, "~> 0.8.0"},
+      {:nx, "~> 1.0"},
+      {:exla, "~> 1.0"},
+      {:fine, "~> 0.1.0", runtime: false, override: true}
     ]
   end
 end
