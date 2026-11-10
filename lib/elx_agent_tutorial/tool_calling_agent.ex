@@ -127,6 +127,42 @@ defmodule ElxAgentTutorial.ToolCallingAgent do
     end
   end
 
+  @doc """
+  Wrap a running agent as a tool another agent can call - Module 5's
+  manager/worker pattern. The manager sees one more tool: "call this agent
+  with a question, get back its final answer." The worker's own step-by-step
+  transcript never enters the manager's context, only the returned text -
+  that's the isolation the module is about.
+
+  Returns `{tool, last_run}` where `last_run/0` returns the worker's most
+  recent `run/2` result (or `nil` before it's been called) purely for your own
+  reporting - Module 5 uses it to print the worker's step count *outside* the
+  manager's context, to make that isolation visible without breaking it.
+  """
+  def as_tool(%__MODULE__{name: name, description: description} = worker) when is_binary(name) do
+    {:ok, last_run_agent} = Agent.start_link(fn -> nil end)
+
+    tool =
+      Tool.from_fun(
+        name,
+        description,
+        %{"task" => %{type: "string", doc: "The question or sub-task to delegate."}},
+        fn %{
+             "task" => task
+           } ->
+          result = run(worker, task)
+          Agent.update(last_run_agent, fn _ -> result end)
+
+          case result do
+            {:ok, answer, _run} -> answer
+            {:error, reason, _run} -> "Delegated agent failed: #{inspect(reason)}"
+          end
+        end
+      )
+
+    {tool, fn -> Agent.get(last_run_agent, & &1) end}
+  end
+
   defp maybe_replan(%{planning_interval: n}, messages, step_number)
        when is_integer(n) and n > 0 and step_number > 1 and rem(step_number - 1, n) == 0 do
     messages ++
