@@ -1,4 +1,4 @@
-defmodule ElxAgentTutorial.Mcp.Server do
+defmodule ElxAgentTutorial.MCP.Server do
   @moduledoc """
   Module 6 - a tiny [MCP](https://modelcontextprotocol.io) server over stdio.
 
@@ -57,7 +57,7 @@ defmodule ElxAgentTutorial.Mcp.Server do
     })
   end
 
-  defp handle_message(%{"method" => "notifications/" <> _}, _tools, _name), do: ok
+  defp handle_message(%{"method" => "notifications/" <> _}, _tools, _name), do: :ok
 
   defp handle_message(%{"method" => "tools/list", "id" => id}, tools_by_name, _name) do
     tools =
