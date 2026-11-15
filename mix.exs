@@ -32,7 +32,12 @@ defmodule ElxAgentTutorial.MixProject do
       {:bumblebee, "~> 0.8.0"},
       {:nx, "~> 1.0"},
       {:exla, "~> 1.0"},
-      {:fine, "~> 0.1.0", runtime: false, override: true}
+      {:fine, "~> 0.1.0", runtime: false, override: true},
+      # Module 7 / capstone: the web UI.
+      {:bandit, "~> 1.5"},
+      {:plug, "~> 1.16"},
+      # Renders the agent's markdown answer to HTML for the web UI.
+      {:mdex, "~> 0.5"}
     ]
   end
 end
