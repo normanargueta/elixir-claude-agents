@@ -198,16 +198,41 @@ defmodule ElxAgentTutorial.Web.Router do
         <button>Ask</button>
       </form>
       <div id="status"></div>
+      <div id="steps"></div>
       <div id="answer"></div>
       <script>
         const form = document.getElementById('f');
         const status = document.getElementById('status');
+        const steps = document.getElementById('steps');
         const answer = document.getElementById('answer');
         form.addEventListener('submit', (e) => {
           e.preventDefault();
-          status.textContent = 'Thinking…'; answer.textContent = '';
+          status.textContent = 'Thinking…'; steps.textContent = ''; answer.textContent = '';
           const q = document.getElementById('q').value;
           const es = new EventSource('/ask?q=' + encodeURIComponent(q));
+          es.addEventListener('step', (e) => {
+            const s = JSON.parse(e.data);
+
+            if ((s.tool_calls || []).some((c) => c.name === 'final_answer')) return;
+
+            const row = document.createElement('div');
+            if (s.error) {
+              row.innerHTML = `<strong>Step ${s.step}</strong> · Error: `;
+              const msg = document.createElement('span');
+              msg.textContent = s.error;
+              row.appendChild(msg);
+            } else {
+              row.innerHTML = `<strong>Step ${s.step}</strong> · ${s.duration_ms}ms · ${s.tokens} tokens · tools:`;
+
+              for (const call of s.tool_calls || []) {
+                const line = document.createElement('div');
+                line.textContent = call.name;
+                row.appendChild(line);
+              }
+            }
+
+            steps.appendChild(row);
+          });
           es.addEventListener('final', (e) => {
             const r = JSON.parse(e.data);
             status.textContent = '';
